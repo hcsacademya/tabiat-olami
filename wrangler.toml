@@ -13,4 +13,4 @@ database_id = "d92fab67-05a2-4fde-9563-8388b8d59108"
 migrations_dir = "migrations"
 
 [vars]
-PUBLIC_APP_URL = "https://YOUR-DOMAIN.example.com"
+PUBLIC_APP_URL = "https://tabiat-olami.hcsacademya.workers.dev"
