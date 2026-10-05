@@ -9,7 +9,8 @@ binding = "ASSETS"
 [[d1_databases]]
 binding = "DB"
 database_name = "tabiat-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "d92fab67-05a2-4fde-9563-8388b8d59108
+0"
 migrations_dir = "migrations"
 
 [vars]
