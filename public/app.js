@@ -1,0 +1,12 @@
+let categories=[],items=[],currentCategory=null,currentIndex=0;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+async function getJSON(url){const r=await fetch(url);if(!r.ok)throw new Error('Xatolik');return r.json()}
+function show(id){['categories','items','viewer'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id))}
+async function loadCategories(){categories=await getJSON('/api/categories');$('#categoryGrid').innerHTML=categories.map(c=>`<button class="category" data-id="${c.id}"><span class="icon">${esc(c.icon)}</span>${esc(c.name)}</button>`).join('')||'<div class="empty">Kategoriya hali yo‘q.</div>';document.querySelectorAll('.category').forEach(b=>b.onclick=()=>openCategory(Number(b.dataset.id)))}
+async function openCategory(id){currentCategory=categories.find(x=>x.id===id);items=await getJSON('/api/items?category_id='+id);$('#categoryTitle').textContent=(currentCategory?.icon||'🌿')+' '+(currentCategory?.name||'');$('#itemGrid').innerHTML=items.map((x,i)=>`<article class="item" data-i="${i}"><img src="${esc(x.image_url||'/images/default.svg')}" alt="${esc(x.name)}"><div class="name">${esc(x.name)}</div></article>`).join('')||'<div class="empty">Bu kategoriyada hozircha narsa yo‘q.</div>';document.querySelectorAll('.item').forEach(b=>b.onclick=()=>openViewer(Number(b.dataset.i)));show('items')}
+function openViewer(i){currentIndex=i;renderViewer();show('viewer')}
+function renderViewer(){const x=items[currentIndex];if(!x)return;$('#counter').textContent=`${currentIndex+1} / ${items.length}`;$('#viewerImage').src=x.image_url||'/images/default.svg';$('#viewerImage').alt=x.name;$('#viewerName').textContent=x.name;$('#viewerDescription').textContent=x.description||''}
+function speak(){const x=items[currentIndex];if(!x)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(x.name);u.lang='uz-UZ';u.rate=.85;u.pitch=1;window.speechSynthesis.speak(u)}
+$('#backBtn').onclick=()=>show('categories');$('#viewerBack').onclick=()=>show('items');$('#prevBtn').onclick=()=>{currentIndex=(currentIndex-1+items.length)%items.length;renderViewer()};$('#nextBtn').onclick=()=>{currentIndex=(currentIndex+1)%items.length;renderViewer()};$('#speakBtn').onclick=speak;
+loadCategories().catch(()=>$('#categoryGrid').innerHTML='<div class="empty">Ma’lumotlarni yuklashda xatolik.</div>');

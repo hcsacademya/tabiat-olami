@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff"><title>Tabiat Olami</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar"><div><div class="brand">🌿 Tabiat Olami</div><div class="subtitle">Rasmni ko‘ring, nomini eshiting</div></div></header>
+    <main>
+      <section id="categories" class="screen"><h2>Kategoriyalar</h2><div id="categoryGrid" class="category-grid"></div></section>
+      <section id="items" class="screen hidden"><button class="back" id="backBtn">← Kategoriyalar</button><h2 id="categoryTitle"></h2><div id="itemGrid" class="item-grid"></div></section>
+      <section id="viewer" class="screen hidden"><button class="back" id="viewerBack">← Orqaga</button><div class="counter" id="counter"></div><div class="viewer-card"><img id="viewerImage" alt=""><h1 id="viewerName"></h1><button id="speakBtn" class="speak">🔊 Eshitish</button><p id="viewerDescription"></p></div><div class="nav"><button id="prevBtn">‹ Oldingi</button><button id="nextBtn">Keyingi ›</button></div></section>
+    </main>
+  </div>
+<script src="/app.js"></script>
+</body></html>
