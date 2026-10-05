@@ -1,1 +1,113 @@
-<!doctype html><html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin — Tabiat Olami</title><link rel="stylesheet" href="/admin.css"></head><body><div class="wrap"><header><h1>🌿 Tabiat Olami — Admin</h1><a href="/">Mini App</a></header><section id="login" class="card"><h2>Admin kirish</h2><input id="password" type="password" placeholder="Admin paroli"><button id="loginBtn">Kirish</button><p id="loginMsg"></p></section><section id="panel" class="hidden"><div class="grid"><div class="card"><h2>Kategoriya qo‘shish</h2><input id="catName" placeholder="Masalan: Qushlar"><input id="catIcon" placeholder="Emoji, masalan 🐦"><button id="addCat">Qo‘shish</button><div id="catList"></div></div><div class="card"><h2>Yangi rasmli narsa qo‘shish</h2><select id="itemCat"></select><input id="itemName" placeholder="Nomi"><textarea id="itemDesc" placeholder="Qisqa ma’lumot (ixtiyoriy)"></textarea><input id="itemFile" type="file" accept="image/*"><button id="uploadBtn">Rasmni yuklash</button><input id="itemUrl" placeholder="Yoki rasm URL manzili"><button id="addItem">Saqlash</button><p id="itemMsg"></p></div></div><div class="card"><h2>Mavjud narsalar</h2><select id="filterCat"></select><div id="itemsList"></div></div></section></div><script src="/admin.js"></script></body></html>
+<!doctype html>
+
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Tabiat Olami</title>
+  <link rel="stylesheet" href="/admin.css">
+</head><body><div class="wrap">  <header>
+    <h1>🌿 Tabiat Olami — Admin</h1>
+    <a href="/">Mini App</a>
+  </header>  <!-- LOGIN -->  <section id="login" class="card">
+    <h2>Admin kirish</h2><input
+  id="password"
+  type="password"
+  placeholder="Admin paroli"
+>
+
+<button id="loginBtn">
+  Kirish
+</button>
+
+<p id="loginMsg"></p>
+
+  </section>  <!-- ADMIN PANEL -->  <section id="panel" class="hidden"><div class="grid">
+
+  <!-- KATEGORIYA -->
+  <div class="card">
+
+    <h2>📂 Kategoriya qo‘shish</h2>
+
+    <input
+      id="catName"
+      placeholder="Masalan: Qushlar"
+    >
+
+    <input
+      id="catIcon"
+      placeholder="Emoji, masalan 🐦"
+    >
+
+    <button id="addCat">
+      Qo‘shish
+    </button>
+
+    <div id="catList"></div>
+
+  </div>
+
+
+  <!-- YANGI ITEM -->
+  <div class="card">
+
+    <h2>🌿 Yangi narsa qo‘shish</h2>
+
+    <select id="itemCat">
+      <option value="">
+        Kategoriyani tanlang
+      </option>
+    </select>
+
+    <input
+      id="itemName"
+      placeholder="Nomi, masalan: Sher"
+    >
+
+    <textarea
+      id="itemDesc"
+      placeholder="Qisqa ma’lumot (ixtiyoriy)"
+    ></textarea>
+
+    <label for="itemUrl">
+      🖼 Rasm URL manzili
+    </label>
+
+    <input
+      id="itemUrl"
+      type="url"
+      placeholder="https://.../sher.jpg"
+    >
+
+    <p class="hint">
+      Rasm internetdagi ochiq URL manzilga ega bo‘lishi kerak.
+    </p>
+
+    <button id="addItem">
+      💾 Saqlash
+    </button>
+
+    <p id="itemMsg"></p>
+
+  </div>
+
+</div>
+
+
+<!-- MAVJUD NARSALAR -->
+<div class="card">
+
+  <h2>📋 Mavjud narsalar</h2>
+
+  <select id="filterCat">
+    <option value="">
+      Kategoriyani tanlang
+    </option>
+  </select>
+
+  <div id="itemsList"></div>
+
+</div>
+
+  </section></div><script src="/admin.js"></script></body>
+</html>
