@@ -1,0 +1,25 @@
+name = "tabiat-olami-mini-app"
+main = "src/worker.js"
+compatibility_date = "2026-10-05"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tabiat-db"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "tabiat-images"
+
+[vars]
+PUBLIC_APP_URL = "https://YOUR-DOMAIN.example.com"
+
+# Secrets are NOT stored here. Set them with:
+# wrangler secret put ADMIN_PASSWORD
+# wrangler secret put TELEGRAM_BOT_TOKEN
+# wrangler secret put TELEGRAM_WEBHOOK_SECRET
