@@ -21,6 +21,26 @@
     {
       "sheet": "10_uy_hayvonlari",
       "items": ["10_01_mushuk", "10_02_it", "10_03_ot", "10_04_sigir", "10_05_qo_y", "10_06_echki"]
+    },
+    {
+      "sheet": "01_yovvoyi_hayvonlar_2",
+      "items": ["01_07_begemot", "01_08_kiyik", "01_09_gorilla", "01_10_kenguru", "01_11_olmaxon", "01_12_tipratikan"]
+    },
+    {
+      "sheet": "04_qushlar_2",
+      "items": ["04_07_to_tiqush", "04_08_tovus", "04_09_oqqush", "04_10_flamingo", "04_11_chumchuq", "04_12_pingvin"]
+    },
+    {
+      "sheet": "06_mevalar_2",
+      "items": ["06_07_shaftoli", "06_08_gilos", "06_09_qulupnay", "06_10_mango", "06_11_o_rik", "06_12_limon"]
+    },
+    {
+      "sheet": "08_gullar_2",
+      "items": ["08_07_boychechak", "08_08_orxideya", "08_09_kungaboqar", "08_10_chinnigul", "08_11_qoqio_t", "08_12_lolaqizg_aldoq"]
+    },
+    {
+      "sheet": "10_uy_hayvonlari_2",
+      "items": ["10_07_quyon", "10_08_tovuq", "10_09_o_rdak", "10_10_eshak", "10_11_tuya", "10_12_g_oz"]
     }
   ]
 }

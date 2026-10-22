@@ -40,7 +40,7 @@ Keyin D1 ID ni `wrangler.toml`ga qo‘ying.
 npx wrangler d1 migrations apply tabiat-db --remote
 ```
 
-Bu schema bilan birga boshlang‘ich **10 kategoriya × 10 ta = 100 ta** obyektni yaratadi, keyin `0003` migratsiyasi ularni hozircha **5 kategoriya × 6 ta = 30 ta**ga qisqartiradi. Boshlang‘ich rasmlar demo SVG ko‘rinishida. Ularning o‘rniga chizilgan rasmlar tayyorlanmoqda — qarang: [`art/README.md`](art/README.md).
+Bu schema bilan birga boshlang‘ich **10 kategoriya × 10 ta = 100 ta** obyektni yaratadi, keyin `0003` migratsiyasi hozircha **5 ta kategoriya**ni qoldiradi. Boshlang‘ich rasmlar demo SVG ko‘rinishida. Ularning o‘rniga chizilgan rasmlar tayyorlanmoqda — qarang: [`art/README.md`](art/README.md).
 
 ## 4. Admin parolini berish
 
