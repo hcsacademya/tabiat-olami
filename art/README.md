@@ -22,9 +22,10 @@ orqali alohida rasmlarga qirqiladi (har kategoriyada 12 ta).
    ```
 
    Natija `public/images/` ichiga `01_01_sher.webp` kabi nomlar bilan
-   tushadi. Agar skript “teng kataklar (tekshirib ko‘ring!)” desa,
-   obyektlar bir-biriga juda yaqin chizilgan bo‘ladi. Qirqilgan rasmlarni
-   ko‘z bilan tekshiring.
+   tushadi. Agar skript “yaxlit qismlar (tekshirib ko‘ring!)” desa,
+   obyektlar ichma-ich chizilgan bo‘ladi — qirqilgan rasmlarni ko‘z bilan
+   tekshiring. “XATO” desa, obyektlar bir-biriga tegib turibdi va rasmni
+   qayta chizdirish kerak.
 
 | Kategoriya | Fayl nomi | Tartib (yuqori qator → pastki qator) |
 |---|---|---|

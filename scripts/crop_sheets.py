@@ -29,6 +29,7 @@ BG_TOLERANCE = 40   # fon rangidan shuncha farq qilgan piksel — obyekt
 PART_GAP = 0.03     # obyektdan shuncha yaqin turgan qism unga qo‘shiladi
 MIN_CUT = 0.005     # obyektlar orasidagi eng tor ruxsat etilgan oraliq
 MIN_MASS = 0.02     # eng kattasining 2% idan kichik dog‘lar tashlanadi
+BLOCK = 4           # yaxlit qismlarni izlashda niqob shuncha marta kichrayadi
 
 
 def load_rgb(path):
@@ -171,24 +172,90 @@ def detect_auto(mask, columns, rows):
     return [tight_box(mask, *box) for box in boxes]
 
 
-def detect_grid(mask, columns, rows):
-    """Zaxira usul: rasmni teng kataklarga bo‘lib, har biridan obyektni oladi."""
+def label_blocks(mask):
+    """Niqobni BLOCK×BLOCK bloklarga bo‘lib, bir-biriga tegib turgan
+    bloklarni bitta qism deb raqamlaydi. (labels, count) qaytaradi."""
     h, w = mask.shape
-    boxes = []
-    for r in range(rows):
-        for c in range(columns):
-            boxes.append(tight_box(
-                mask,
-                w * c // columns,
-                h * r // rows,
-                w * (c + 1) // columns,
-                h * (r + 1) // rows,
-            ))
-    return boxes
+    bh, bw = h // BLOCK, w // BLOCK
+    small = (
+        mask[:bh * BLOCK, :bw * BLOCK]
+        .reshape(bh, BLOCK, bw, BLOCK)
+        .any(axis=(1, 3))
+    )
+
+    labels = np.zeros((bh, bw), dtype=np.int32)
+    count = 0
+    for y, x in zip(*np.nonzero(small)):
+        if labels[y, x]:
+            continue
+        count += 1
+        labels[y, x] = count
+        stack = [(y, x)]
+        while stack:
+            cy, cx = stack.pop()
+            for ny in (cy - 1, cy, cy + 1):
+                for nx in (cx - 1, cx, cx + 1):
+                    if (
+                        0 <= ny < bh and 0 <= nx < bw
+                        and small[ny, nx] and not labels[ny, nx]
+                    ):
+                        labels[ny, nx] = count
+                        stack.append((ny, nx))
+    return labels, count
 
 
-def save_item(img, bg, box, path):
+def detect_cells(mask, columns, rows):
+    """Zaxira usul: har bir yaxlit qismni markazi tushgan katakka biriktiradi.
+
+    Obyektlar ichma-ich chizilganda ham ishlaydi (masalan, bir qushning dumi
+    pastdagi qushning boshi bilan bir balandlikda). Har bir katak uchun
+    (box, erase) qaytaradi: erase — qo‘shni obyektlarning piksellari.
+    """
+    h, w = mask.shape
+    labels, count = label_blocks(mask)
+    min_blocks = labels.size * 0.0005
+
+    cell_of = np.full(count + 1, -1, dtype=np.int32)
+    for i in range(1, count + 1):
+        ys, xs = np.nonzero(labels == i)
+        if len(ys) < min_blocks:
+            continue  # mayda dog‘
+        cy = (ys.min() + ys.max() + 1) / 2 * BLOCK
+        cx = (xs.min() + xs.max() + 1) / 2 * BLOCK
+        row = min(int(cy * rows / h), rows - 1)
+        col = min(int(cx * columns / w), columns - 1)
+        cell_of[i] = row * columns + col
+
+    owner = np.full((h, w), -1, dtype=np.int32)
+    bh, bw = labels.shape
+    owner[:bh * BLOCK, :bw * BLOCK] = np.repeat(
+        np.repeat(cell_of[labels], BLOCK, axis=0), BLOCK, axis=1
+    )
+
+    found = []
+    masses = []
+    for cell in range(rows * columns):
+        ys, xs = np.nonzero((owner == cell) & mask)
+        if not len(ys):
+            return None
+        box = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1)
+        found.append((box, (owner >= 0) & (owner != cell)))
+        masses.append(len(ys))
+
+    # Katakda faqat mayda bo‘laklar qolgan bo‘lsa, obyekt qo‘shnisiga
+    # tegib turibdi va ikkalasi bitta katakka tushgan.
+    if min(masses) < 0.15 * float(np.median(masses)):
+        return None
+    return found
+
+
+def save_item(img, bg, box, path, erase=None):
     piece = img.crop(box)
+    if erase is not None:
+        left, top, right, bottom = box
+        arr = np.array(piece)
+        arr[erase[top:bottom, left:right]] = bg
+        piece = Image.fromarray(arr)
     side = int(max(piece.width, piece.height) * (1 + 2 * PADDING))
 
     canvas = Image.new("RGB", (side, side), tuple(int(c) for c in bg))
@@ -238,18 +305,22 @@ def main():
         mask = foreground_mask(px, bg)
 
         boxes = detect_auto(mask, columns, rows)
+        found = boxes and [(box, None) for box in boxes]
         method = "avtomatik"
-        if boxes is None:
-            boxes = detect_grid(mask, columns, rows)
-            method = "teng kataklar (tekshirib ko‘ring!)"
+        if found is None:
+            found = detect_cells(mask, columns, rows)
+            method = "yaxlit qismlar (tekshirib ko‘ring!)"
 
-        if any(box is None for box in boxes):
-            print(f"[{sheet['sheet']}] XATO: ba’zi kataklar bo‘sh")
+        if found is None or any(box is None for box, _ in found):
+            print(
+                f"[{sheet['sheet']}] XATO: obyektlarni ajratib bo‘lmadi — "
+                "ular bir-biriga tegib turibdi, rasmni qayta chizdiring"
+            )
             failed = True
             continue
 
-        for name, box in zip(items, boxes):
-            save_item(img, bg, box, OUT_DIR / f"{name}.webp")
+        for name, (box, erase) in zip(items, found):
+            save_item(img, bg, box, OUT_DIR / f"{name}.webp", erase)
 
         print(f"[{sheet['sheet']}] {len(items)} ta rasm saqlandi, usul: {method}")
 
