@@ -1,0 +1,26 @@
+{
+  "columns": 3,
+  "rows": 2,
+  "sheets": [
+    {
+      "sheet": "01_yovvoyi_hayvonlar",
+      "items": ["01_01_sher", "01_02_fil", "01_03_jirafa", "01_04_zebra", "01_05_maymun", "01_06_karkidon"]
+    },
+    {
+      "sheet": "04_qushlar",
+      "items": ["04_01_burgut", "04_02_boyo_g_li", "04_03_qarg_a", "04_04_kabutar", "04_05_laylak", "04_06_qaldirg_och"]
+    },
+    {
+      "sheet": "06_mevalar",
+      "items": ["06_01_olma", "06_02_nok", "06_03_apelsin", "06_04_banan", "06_05_uzum", "06_06_anor"]
+    },
+    {
+      "sheet": "08_gullar",
+      "items": ["08_01_atirgul", "08_02_lola", "08_03_moychechak", "08_04_binafsha", "08_05_nargiz", "08_06_rayhon_guli"]
+    },
+    {
+      "sheet": "10_uy_hayvonlari",
+      "items": ["10_01_mushuk", "10_02_it", "10_03_ot", "10_04_sigir", "10_05_qo_y", "10_06_echki"]
+    }
+  ]
+}
