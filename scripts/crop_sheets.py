@@ -26,7 +26,8 @@ EXTENSIONS = (".png", ".jpg", ".jpeg", ".webp")
 SIZE = 768          # chiqadigan kvadrat rasm tomoni (px)
 PADDING = 0.08      # obyekt atrofidagi bo‘sh joy, tomonga nisbatan
 BG_TOLERANCE = 40   # fon rangidan shuncha farq qilgan piksel — obyekt
-MIN_GAP = 0.03      # bundan tor oq oraliq obyektni ikkiga bo‘lmaydi
+PART_GAP = 0.03     # obyektdan shuncha yaqin turgan qism unga qo‘shiladi
+MIN_CUT = 0.005     # obyektlar orasidagi eng tor ruxsat etilgan oraliq
 MIN_MASS = 0.02     # eng kattasining 2% idan kichik dog‘lar tashlanadi
 
 
@@ -95,7 +96,7 @@ def tight_box(mask, left, top, right, bottom):
     Obyektga yaqin turgan mayda qismlar (dum, mo‘ylov, barg) ham kiradi,
     uzoqdagi mayda dog‘lar tashlanadi.
     """
-    gap = int(max(mask.shape) * MIN_GAP)
+    gap = int(max(mask.shape) * PART_GAP)
     cell = mask[top:bottom, left:right]
     rows = segments(cell.sum(axis=1), gap, noise=0)
     cols = segments(cell.sum(axis=0), gap, noise=0)
@@ -109,20 +110,44 @@ def tight_box(mask, left, top, right, bottom):
     )
 
 
+def cuts(profile, count):
+    """Profilni `count` bo‘lakka eng keng oq oraliqlarning o‘rtasidan bo‘ladi.
+
+    Chegaralar ro‘yxatini [0, ..., len(profile)] qaytaradi.
+    """
+    segs = segments(profile, 1)
+    if len(segs) < count:
+        return None
+
+    gaps = sorted(
+        range(len(segs) - 1),
+        key=lambda i: segs[i + 1][0] - segs[i][1],
+        reverse=True,
+    )[:count - 1]
+
+    min_cut = max(2, int(len(profile) * MIN_CUT))
+    if any(segs[i + 1][0] - segs[i][1] < min_cut for i in gaps):
+        return None
+
+    middles = sorted((segs[i][1] + segs[i + 1][0]) // 2 for i in gaps)
+    return [0] + middles + [len(profile)]
+
+
 def split(mask, outer, inner):
-    """Avval gorizontal bo‘shliqlar bo‘yicha `outer` ta qatorga,
-    keyin har qatorni `inner` ta bo‘lakka ajratadi."""
-    h, w = mask.shape
-    bands = segments(mask.sum(axis=1), int(h * MIN_GAP))
-    if len(bands) != outer:
+    """Avval `outer` ta qatorga, keyin har qatorni `inner` ta katakka bo‘ladi."""
+    row_cuts = cuts(mask.sum(axis=1), outer)
+    if row_cuts is None:
         return None
 
     boxes = []
-    for top, bottom in bands:
-        spans = segments(mask[top:bottom].sum(axis=0), int(w * MIN_GAP))
-        if len(spans) != inner:
+    for top, bottom in zip(row_cuts, row_cuts[1:]):
+        col_cuts = cuts(mask[top:bottom].sum(axis=0), inner)
+        if col_cuts is None:
             return None
-        boxes.extend((left, top, right, bottom) for left, right in spans)
+        boxes.extend(
+            (left, top, right, bottom)
+            for left, right in zip(col_cuts, col_cuts[1:])
+        )
     return boxes
 
 
